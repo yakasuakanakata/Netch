@@ -97,6 +97,14 @@ namespace Netch.Forms
             }
         }
 
+        private void ManageModesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Hide();
+            new Manage().ShowDialog();
+            InitMode();
+            Show();
+        }
+
         #endregion
 
         #region 订阅

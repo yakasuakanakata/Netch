@@ -91,6 +91,7 @@ namespace Netch.Forms
             this.SettingsButton = new System.Windows.Forms.Button();
             this.ProfileGroupBox = new System.Windows.Forms.GroupBox();
             this.ProfileTable = new System.Windows.Forms.TableLayoutPanel();
+            this.ManageModesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip.SuspendLayout();
             this.ConfigurationGroupBox.SuspendLayout();
             this.configLayoutPanel.SuspendLayout();
@@ -187,7 +188,8 @@ namespace Netch.Forms
             // 
             this.ModeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CreateProcessModeToolStripMenuItem,
-            this.ReloadModesToolStripMenuItem});
+            this.ReloadModesToolStripMenuItem,
+            this.ManageModesToolStripMenuItem});
             this.ModeToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.ModeToolStripMenuItem.Name = "ModeToolStripMenuItem";
             this.ModeToolStripMenuItem.Size = new System.Drawing.Size(55, 21);
@@ -697,6 +699,13 @@ namespace Netch.Forms
             this.ProfileTable.Size = new System.Drawing.Size(703, 43);
             this.ProfileTable.TabIndex = 0;
             // 
+            // ManageModesToolStripMenuItem
+            // 
+            this.ManageModesToolStripMenuItem.Name = "ManageModesToolStripMenuItem";
+            this.ManageModesToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.ManageModesToolStripMenuItem.Text = "Manage Modes";
+            this.ManageModesToolStripMenuItem.Click += new System.EventHandler(this.ManageModesToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -739,9 +748,9 @@ namespace Netch.Forms
             this.ProfileGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
+        private System.Windows.Forms.ToolStripMenuItem ManageModesToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton AboutToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem AddShadowsocksRServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddShadowsocksServerToolStripMenuItem;
