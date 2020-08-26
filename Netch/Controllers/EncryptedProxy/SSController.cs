@@ -48,7 +48,8 @@ namespace Netch.Controllers
             #region Argument
 
             var argument = new StringBuilder();
-            argument.Append($"-s {server.Hostname} -p {server.Port} -b {LocalAddress} -l {Socks5LocalPort} -m {server.EncryptMethod} -k \"{server.Password}\" -u");
+            argument.Append(
+                $"-s {server.Hostname} -p {server.Port} -b {LocalAddress} -l {Socks5LocalPort} -m {server.EncryptMethod} -k \"{server.Password}\" -u");
             if (!string.IsNullOrWhiteSpace(server.Plugin) && !string.IsNullOrWhiteSpace(server.PluginOption))
                 argument.Append($" --plugin {server.Plugin} --plugin-opts \"{server.PluginOption}\"");
             if (mode.BypassChina) argument.Append(" --acl default.acl");
@@ -63,9 +64,10 @@ namespace Netch.Controllers
         /// </summary>
         public override void Stop()
         {
-            if (Global.Settings.BootShadowsocksFromDLL) NativeMethods.Shadowsocks.Stop();
-            else
-                StopInstance();
+            // if (Global.Settings.BootShadowsocksFromDLL) NativeMethods.Shadowsocks.Stop();
+            // else
+            NativeMethods.Shadowsocks.Stop();
+            StopInstance();
         }
     }
 }

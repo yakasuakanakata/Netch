@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Netch.Models;
 using Netch.Utils;
+using NetSpeedMonitor.Utils;
 
 namespace Netch.Forms
 {
@@ -53,7 +54,8 @@ namespace Netch.Forms
                         if (_isFirstCloseWindow)
                         {
                             // 显示提示语
-                            NotifyTip(i18N.Translate("Netch is now minimized to the notification bar, double click this icon to restore."));
+                            NotifyTip(i18N.Translate(
+                                "Netch is now minimized to the notification bar, double click this icon to restore."));
                             _isFirstCloseWindow = false;
                         }
 
@@ -92,52 +94,19 @@ namespace Netch.Forms
             }
         }
 
-        public void OnBandwidthUpdated(long download)
+        public void OnBandwidthUpdated(String upload, String download, long t_upload, long t_download)
         {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<long>(OnBandwidthUpdated), download);
-                return;
-            }
-
             try
             {
-                UsedBandwidthLabel.Text = $"{i18N.Translate("Used", ": ")}{Bandwidth.Compute(download)}";
-                //UploadSpeedLabel.Text = $"↑: {Utils.Bandwidth.Compute(upload - LastUploadBandwidth)}/s";
-                DownloadSpeedLabel.Text = $"↑↓: {Bandwidth.Compute(download - LastDownloadBandwidth)}/s";
-
-                //LastUploadBandwidth = upload;
-                LastDownloadBandwidth = download;
-                Refresh();
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        public void OnBandwidthUpdated(long upload, long download)
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<long, long>(OnBandwidthUpdated), upload, download);
-                return;
-            }
-
-            try
-            {
-                if (upload < 1 || download < 1)
+                UploadSpeedLabel.Text = $"↑: {upload}";
+                DownloadSpeedLabel.Text = $"↓: {download}";
+                
+                if (t_upload != -1 && t_download != -1)
                 {
-                    return;
+                    UsedBandwidthLabel.Text =
+                        $"{i18N.Translate("Used", ": ")}{Util.ToByteSize(t_upload + t_download)}";
                 }
 
-                UsedBandwidthLabel.Text =
-                    $"{i18N.Translate("Used", ": ")}{Bandwidth.Compute(upload + download)}";
-                UploadSpeedLabel.Text = $"↑: {Bandwidth.Compute(upload - LastUploadBandwidth)}/s";
-                DownloadSpeedLabel.Text = $"↓: {Bandwidth.Compute(download - LastDownloadBandwidth)}/s";
-
-                LastUploadBandwidth = upload;
-                LastDownloadBandwidth = download;
                 Refresh();
             }
             catch
@@ -145,15 +114,5 @@ namespace Netch.Forms
                 // ignored
             }
         }
-
-        /// <summary>
-        ///     上一次上传的流量
-        /// </summary>
-        public long LastUploadBandwidth;
-
-        /// <summary>
-        ///     上一次下载的流量
-        /// </summary>
-        public long LastDownloadBandwidth;
     }
 }

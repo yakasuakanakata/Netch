@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Diagnostics.Tracing.Parsers;
-using Microsoft.Diagnostics.Tracing.Session;
 using Netch.Controllers;
-using Netch.Forms;
 using Netch.Models;
+using NetSpeedMonitor.Collections;
+using NetSpeedMonitor.NetUtils;
 
 namespace Netch.Utils
 {
@@ -39,6 +39,8 @@ namespace Netch.Utils
             return string.Format("{0} {1}", Math.Round(result, 2), units[i]);
         }
 
+        public static readonly NetFlowService Ns = new NetFlowService();
+
         /// <summary>
         /// 根据程序名统计流量
         /// </summary>
@@ -69,53 +71,22 @@ namespace Netch.Utils
 
             var processList = instances.Select(instance => instance.Id).ToList();
 
-            Logging.Info("流量统计进程:" + string.Join(",", instances.Select(instance => $"({instance.Id})"+instance.ProcessName).ToArray()));
+            Logging.Info("流量统计进程:" + string.Join(",",
+                instances.Select(instance => $"({instance.Id})" + instance.ProcessName).ToArray()));
 
             Task.Run(() =>
             {
-                using (var session = new TraceEventSession("KernelAndClrEventsSession"))
+                Ns.Start(processList);
+                while (Global.MainForm.State != State.Stopped)
                 {
-                    session.EnableKernelProvider(KernelTraceEventParser.Keywords.NetworkTCPIP);
+                    var zInfo = new NetProcessInfo();
+                    zInfo.UploadBag = 0;
+                    zInfo.DownloadBag = 0;
+                    Global.MainForm.OnBandwidthUpdated(zInfo.UploadSpeed, zInfo.DownloadSpeed, -1, -1);
 
-                    //这玩意儿上传和下载得到的data是一样的:)
-                    //所以暂时没办法区分上传下载流量
-                    session.Source.Kernel.TcpIpRecv += data =>
-                    {
-                        if (processList.Contains(data.ProcessID))
-                        {
-                            lock (counterLock)
-                                received += data.size;
-                            //Logging.Info($"TcpIpRecv: {Compute(data.size)}");
-                        }
-                    };
-                    session.Source.Kernel.UdpIpRecv += data =>
-                    {
-                        if (processList.Contains(data.ProcessID))
-                        {
-                            lock (counterLock)
-                                received += data.size;
-                            //Logging.Info($"UdpIpRecv: {Compute(data.size)}");
-                        }
-                    };
-
-                    session.Source.Process();
+                    Thread.Sleep(2000);
                 }
             });
-
-            if ((Convert.ToInt32(Global.MainForm.LastDownloadBandwidth) - Convert.ToInt32(received)) == 0)
-            {
-                Global.MainForm.OnBandwidthUpdated(0);
-                received = 0;
-            }
-
-            while (Global.MainForm.State != State.Stopped)
-            {
-                Task.Delay(1000).Wait();
-                lock (counterLock)
-                {
-                    Global.MainForm.OnBandwidthUpdated(Convert.ToInt64(received));
-                }
-            }
         }
     }
 }

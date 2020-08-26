@@ -59,8 +59,9 @@
     <ItemGroup>
         <PackageReference Include="IPNetwork2" Version="2.5.211" />
         <PackageReference Include="MaxMind.GeoIP2" Version="3.2.0" />
-        <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="2.0.58" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="PresentationFramework" Version="4.6.0" />
+        <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.7.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -107,6 +108,6 @@
     </ItemGroup>
     <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="@ECHO OFF&#xD;&#xA;RD /S /Q $(TargetDir)bin &#x3E;NUL 2&#x3E;&#x26;1&#xD;&#xA;RD /S /Q $(TargetDir)i18n &#x3E;NUL 2&#x3E;&#x26;1&#xD;&#xA;RD /S /Q $(TargetDir)mode &#x3E;NUL 2&#x3E;&#x26;1&#xD;&#xA;&#xD;&#xA;XCOPY /s /Y $(SolutionDir)binaries $(TargetDir)bin\ &#x3E;NUL&#xD;&#xA;XCOPY /s /Y $(SolutionDir)translations\i18n $(TargetDir)i18n\ &#x3E;NUL&#xD;&#xA;XCOPY /s /Y $(SolutionDir)modes\mode $(TargetDir)mode\ &#x3E;NUL&#xD;&#xA;&#xD;&#xA;DEL /f $(TargetDir)*.config &#x3E;NUL 2&#x3E;&#x26;1&#xD;&#xA;DEL /f $(TargetDir)*.pdb &#x3E;NUL 2&#x3E;&#x26;1&#xD;&#xA;RD /s /Q $(TargetDir)x86 &#x3E;NUL 2&#x3E;&#x26;1" />
+      <Exec Command="@ECHO OFF&#xD;&#xA;RD /S /Q $(TargetDir)bin &gt;NUL 2&gt;&amp;1&#xD;&#xA;RD /S /Q $(TargetDir)i18n &gt;NUL 2&gt;&amp;1&#xD;&#xA;RD /S /Q $(TargetDir)mode &gt;NUL 2&gt;&amp;1&#xD;&#xA;&#xD;&#xA;XCOPY /s /Y $(SolutionDir)binaries $(TargetDir)bin\ &gt;NUL&#xD;&#xA;XCOPY /s /Y $(SolutionDir)translations\i18n $(TargetDir)i18n\ &gt;NUL&#xD;&#xA;XCOPY /s /Y $(SolutionDir)modes\mode $(TargetDir)mode\ &gt;NUL&#xD;&#xA;&#xD;&#xA;DEL /f $(TargetDir)*.config &gt;NUL 2&gt;&amp;1&#xD;&#xA;DEL /f $(TargetDir)*.pdb &gt;NUL 2&gt;&amp;1&#xD;&#xA;RD /s /Q $(TargetDir)x86 &gt;NUL 2&gt;&amp;1" />
     </Target>
 </Project>

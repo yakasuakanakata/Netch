@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows;
 using Netch.Models;
 using Netch.Utils;
+using NetSpeedMonitor.Utils;
 
 namespace Netch.Forms
 {
@@ -72,22 +73,23 @@ namespace Netch.Forms
 
                         ProfileGroupBox.Enabled = true;
 
-                        UsedBandwidthLabel.Visible /*= UploadSpeedLabel.Visible*/ = DownloadSpeedLabel.Visible = true;
+                        UsedBandwidthLabel.Visible = UploadSpeedLabel.Visible = DownloadSpeedLabel.Visible = true;
                         break;
                     case State.Stopping:
                         ControlButton.Enabled = false;
                         ControlButton.Text = "...";
 
                         ProfileGroupBox.Enabled = false;
-                        UsedBandwidthLabel.Visible /*= UploadSpeedLabel.Visible*/ = DownloadSpeedLabel.Visible = false;
+                        UsedBandwidthLabel.Visible = UploadSpeedLabel.Visible = DownloadSpeedLabel.Visible = false;
                         NatTypeStatusText();
+
+                        //停止流量统计
+                        Bandwidth.Ns.Stop();
+                        UsedBandwidthLabel.Text = $"{i18N.Translate("Used", ": ")}{Util.ToByteSize(0)}";
                         break;
                     case State.Stopped:
                         ControlButton.Enabled = true;
                         ControlButton.Text = i18N.Translate("Start");
-
-                        LastUploadBandwidth = 0;
-                        LastDownloadBandwidth = 0;
 
                         ProfileGroupBox.Enabled = true;
                         StartDisableItems(true);
@@ -125,6 +127,7 @@ namespace Netch.Forms
                 {
                     NatTypeStatusLabel.Text = String.Format("NAT{0}{1}", i18N.Translate(": "), text);
                 }
+
                 if (int.TryParse(text, out int natType))
                 {
                     if (natType > 0 && natType < 5)
